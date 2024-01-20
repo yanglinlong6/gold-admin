@@ -169,7 +169,7 @@ qiniu:
     use-https: false
     use-cdn-domains: false
 redis:
-    addr: 149.129.78.23:6379
+    addr: 149.129.78.23:16379
     password: "34uvgw24f34%#f31"
     db: 0
 sqlite:
