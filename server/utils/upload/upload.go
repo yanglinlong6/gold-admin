@@ -31,6 +31,8 @@ func NewOss() OSS {
 		return HuaWeiObs
 	case "aws-s3":
 		return &AwsS3{}
+	case "minio":
+		return &MinIO{}
 	default:
 		return &Local{}
 	}
