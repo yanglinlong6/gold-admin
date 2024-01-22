@@ -2,19 +2,18 @@ package orderManager
 
 import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
-    "github.com/flipped-aurora/gin-vue-admin/server/model/orderManager"
-    orderManagerReq "github.com/flipped-aurora/gin-vue-admin/server/model/orderManager/request"
-    "github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
-    "github.com/flipped-aurora/gin-vue-admin/server/service"
-    "github.com/gin-gonic/gin"
-    "go.uber.org/zap"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/orderManager"
+	orderManagerReq "github.com/flipped-aurora/gin-vue-admin/server/model/orderManager/request"
+	"github.com/flipped-aurora/gin-vue-admin/server/service"
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 type GoldShopApi struct {
 }
 
 var goldShopService = service.ServiceGroupApp.OrderManagerServiceGroup.GoldShopService
-
 
 // CreateGoldShop 创建goldShop表
 // @Tags GoldShop
@@ -34,7 +33,7 @@ func (goldShopApi *GoldShopApi) CreateGoldShop(c *gin.Context) {
 	}
 
 	if err := goldShopService.CreateGoldShop(&goldShop); err != nil {
-        global.GVA_LOG.Error("创建失败!", zap.Error(err))
+		global.GVA_LOG.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
 	} else {
 		response.OkWithMessage("创建成功", c)
@@ -53,7 +52,7 @@ func (goldShopApi *GoldShopApi) CreateGoldShop(c *gin.Context) {
 func (goldShopApi *GoldShopApi) DeleteGoldShop(c *gin.Context) {
 	id := c.Query("ID")
 	if err := goldShopService.DeleteGoldShop(id); err != nil {
-        global.GVA_LOG.Error("删除失败!", zap.Error(err))
+		global.GVA_LOG.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
 	} else {
 		response.OkWithMessage("删除成功", c)
@@ -72,7 +71,7 @@ func (goldShopApi *GoldShopApi) DeleteGoldShop(c *gin.Context) {
 func (goldShopApi *GoldShopApi) DeleteGoldShopByIds(c *gin.Context) {
 	ids := c.QueryArray("ids[]")
 	if err := goldShopService.DeleteGoldShopByIds(ids); err != nil {
-        global.GVA_LOG.Error("批量删除失败!", zap.Error(err))
+		global.GVA_LOG.Error("批量删除失败!", zap.Error(err))
 		response.FailWithMessage("批量删除失败", c)
 	} else {
 		response.OkWithMessage("批量删除成功", c)
@@ -97,7 +96,7 @@ func (goldShopApi *GoldShopApi) UpdateGoldShop(c *gin.Context) {
 	}
 
 	if err := goldShopService.UpdateGoldShop(goldShop); err != nil {
-        global.GVA_LOG.Error("更新失败!", zap.Error(err))
+		global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
 	} else {
 		response.OkWithMessage("更新成功", c)
@@ -116,7 +115,7 @@ func (goldShopApi *GoldShopApi) UpdateGoldShop(c *gin.Context) {
 func (goldShopApi *GoldShopApi) FindGoldShop(c *gin.Context) {
 	id := c.Query("ID")
 	if regoldShop, err := goldShopService.GetGoldShop(id); err != nil {
-        global.GVA_LOG.Error("查询失败!", zap.Error(err))
+		global.GVA_LOG.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 	} else {
 		response.OkWithData(gin.H{"regoldShop": regoldShop}, c)
@@ -140,14 +139,14 @@ func (goldShopApi *GoldShopApi) GetGoldShopList(c *gin.Context) {
 		return
 	}
 	if list, total, err := goldShopService.GetGoldShopInfoList(pageInfo); err != nil {
-	    global.GVA_LOG.Error("获取失败!", zap.Error(err))
-        response.FailWithMessage("获取失败", c)
-    } else {
-        response.OkWithDetailed(response.PageResult{
-            List:     list,
-            Total:    total,
-            Page:     pageInfo.Page,
-            PageSize: pageInfo.PageSize,
-        }, "获取成功", c)
-    }
+		global.GVA_LOG.Error("获取失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		response.OkWithDetailed(response.PageResult{
+			List:     list,
+			Total:    total,
+			Page:     pageInfo.Page,
+			PageSize: pageInfo.PageSize,
+		}, "获取成功", c)
+	}
 }

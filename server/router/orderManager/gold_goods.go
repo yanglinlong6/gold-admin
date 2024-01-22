@@ -15,13 +15,14 @@ func (s *GoldGoodsRouter) InitGoldGoodsRouter(Router *gin.RouterGroup) {
 	goldGoodsRouterWithoutRecord := Router.Group("goldGoods")
 	var goldGoodsApi = v1.ApiGroupApp.OrderManagerApiGroup.GoldGoodsApi
 	{
-		goldGoodsRouter.POST("createGoldGoods", goldGoodsApi.CreateGoldGoods)   // 新建goldGoods表
-		goldGoodsRouter.DELETE("deleteGoldGoods", goldGoodsApi.DeleteGoldGoods) // 删除goldGoods表
+		goldGoodsRouter.POST("createGoldGoods", goldGoodsApi.CreateGoldGoods)             // 新建goldGoods表
+		goldGoodsRouter.POST("addGoldGoodsAndFiles", goldGoodsApi.AddGoldGoodsAndFiles)   // 新建goldGoods表还有图片
+		goldGoodsRouter.DELETE("deleteGoldGoods", goldGoodsApi.DeleteGoldGoods)           // 删除goldGoods表
 		goldGoodsRouter.DELETE("deleteGoldGoodsByIds", goldGoodsApi.DeleteGoldGoodsByIds) // 批量删除goldGoods表
-		goldGoodsRouter.PUT("updateGoldGoods", goldGoodsApi.UpdateGoldGoods)    // 更新goldGoods表
+		goldGoodsRouter.PUT("updateGoldGoods", goldGoodsApi.UpdateGoldGoods)              // 更新goldGoods表
 	}
 	{
-		goldGoodsRouterWithoutRecord.GET("findGoldGoods", goldGoodsApi.FindGoldGoods)        // 根据ID获取goldGoods表
-		goldGoodsRouterWithoutRecord.GET("getGoldGoodsList", goldGoodsApi.GetGoldGoodsList)  // 获取goldGoods表列表
+		goldGoodsRouterWithoutRecord.GET("findGoldGoods", goldGoodsApi.FindGoldGoods)       // 根据ID获取goldGoods表
+		goldGoodsRouterWithoutRecord.GET("getGoldGoodsList", goldGoodsApi.GetGoldGoodsList) // 获取goldGoods表列表
 	}
 }

@@ -2428,6 +2428,44 @@ const docTemplate = `{
                 }
             }
         },
+        "/goldGoods/AddGoldGoodsAndFiles": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "GoldGoods"
+                ],
+                "summary": "创建goldGoods表还有图片文件",
+                "parameters": [
+                    {
+                        "description": "创建goldGoods表还有图片文件",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.AddGoldGoodsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"创建成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/goldGoods/createGoldGoods": {
             "post": {
                 "security": [
@@ -7154,6 +7192,75 @@ const docTemplate = `{
                 "updatedAt": {
                     "description": "更新时间",
                     "type": "string"
+                }
+            }
+        },
+        "request.AddGoldGoodsFileRequest": {
+            "type": "object",
+            "properties": {
+                "ID": {
+                    "description": "主键ID",
+                    "type": "integer"
+                },
+                "createId": {
+                    "description": "创建人id",
+                    "type": "integer"
+                },
+                "createTime": {
+                    "description": "创建时间",
+                    "type": "string"
+                },
+                "fileName": {
+                    "description": "文件名",
+                    "type": "string"
+                },
+                "filePath": {
+                    "description": "文件路径",
+                    "type": "string"
+                },
+                "fileType": {
+                    "description": "文件类型",
+                    "type": "boolean"
+                },
+                "goodsId": {
+                    "description": "商品Id",
+                    "type": "integer"
+                },
+                "updateId": {
+                    "description": "更新人Id",
+                    "type": "integer"
+                },
+                "updateTime": {
+                    "description": "更新时间",
+                    "type": "string"
+                }
+            }
+        },
+        "request.AddGoldGoodsRequest": {
+            "type": "object",
+            "properties": {
+                "ID": {
+                    "description": "主键ID",
+                    "type": "integer"
+                },
+                "goldGoodsFileList": {
+                    "description": "上传文件路径",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/request.AddGoldGoodsFileRequest"
+                    }
+                },
+                "goodsName": {
+                    "description": "商品名称",
+                    "type": "string"
+                },
+                "goodsPrice": {
+                    "description": "商品价格",
+                    "type": "integer"
+                },
+                "goodsTypeId": {
+                    "description": "商品分类Id",
+                    "type": "integer"
                 }
             }
         },

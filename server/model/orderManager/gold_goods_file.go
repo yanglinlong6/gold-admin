@@ -10,7 +10,7 @@ import (
 // goldGoodsFile表 结构体  GoldGoodsFile
 type GoldGoodsFile struct {
       global.GVA_MODEL
-      GoodsId  *int `json:"goodsId" form:"goodsId" gorm:"column:goods_id;comment:商品Id;size:10;"`  //商品Id 
+      GoodsId  *uint `json:"goodsId" form:"goodsId" gorm:"column:goods_id;comment:商品Id;size:10;"`  //商品Id 
       FileName  string `json:"fileName" form:"fileName" gorm:"column:file_name;comment:文件名;size:255;"`  //文件名 
       FileType  *bool `json:"fileType" form:"fileType" gorm:"column:file_type;comment:文件类型;"`  //文件类型 
       FilePath  string `json:"filePath" form:"filePath" gorm:"column:file_path;comment:文件路径;size:1024;"`  //文件路径 
