@@ -729,6 +729,105 @@ definitions:
         description: 收件人:多个以英文逗号分隔 例：a@qq.com b@qq.com 正式开发中请把此项目作为参数使用
         type: string
     type: object
+  orderManager.GoldGoods:
+    properties:
+      ID:
+        description: 主键ID
+        type: integer
+      createId:
+        description: 商品创建人
+        type: integer
+      createTime:
+        description: 创建时间
+        type: string
+      createdAt:
+        description: 创建时间
+        type: string
+      goodsName:
+        description: 商品名称
+        type: string
+      goodsPrice:
+        description: 商品价格
+        type: integer
+      goodsTypeId:
+        description: 商品分类Id
+        type: integer
+      updateId:
+        description: 商品更新人
+        type: integer
+      updateTime:
+        description: 更新时间
+        type: string
+      updatedAt:
+        description: 更新时间
+        type: string
+    type: object
+  orderManager.GoldGoodsFile:
+    properties:
+      ID:
+        description: 主键ID
+        type: integer
+      createId:
+        description: 创建人id
+        type: integer
+      createTime:
+        description: 创建时间
+        type: string
+      createdAt:
+        description: 创建时间
+        type: string
+      fileName:
+        description: 文件名
+        type: string
+      filePath:
+        description: 文件路径
+        type: string
+      fileType:
+        description: 文件类型
+        type: boolean
+      goodsId:
+        description: 商品Id
+        type: integer
+      updateId:
+        description: 更新人Id
+        type: integer
+      updateTime:
+        description: 更新时间
+        type: string
+      updatedAt:
+        description: 更新时间
+        type: string
+    type: object
+  orderManager.GoldShop:
+    properties:
+      ID:
+        description: 主键ID
+        type: integer
+      buyId:
+        description: 购买人Id
+        type: integer
+      createId:
+        description: 创建人Id
+        type: integer
+      createTime:
+        description: 创建时间
+        type: string
+      createdAt:
+        description: 创建时间
+        type: string
+      goodsId:
+        description: 商品Id
+        type: integer
+      updateId:
+        description: 更新人Id
+        type: integer
+      updateTime:
+        description: 更新时间
+        type: string
+      updatedAt:
+        description: 更新时间
+        type: string
+    type: object
   request.AddMenuAuthorityInfo:
     properties:
       authorityId:
@@ -1424,6 +1523,30 @@ definitions:
       value:
         description: 字典值
         type: integer
+    type: object
+  system.SysExportTemplate:
+    properties:
+      ID:
+        description: 主键ID
+        type: integer
+      createdAt:
+        description: 创建时间
+        type: string
+      name:
+        description: 模板名称
+        type: string
+      tableName:
+        description: 表名称
+        type: string
+      templateID:
+        description: 模板标识
+        type: string
+      templateInfo:
+        description: 模板信息
+        type: string
+      updatedAt:
+        description: 更新时间
+        type: string
     type: object
   system.SysMenu:
     properties:
@@ -2955,6 +3078,558 @@ paths:
       summary: 上传文件示例
       tags:
       - ExaFileUploadAndDownload
+  /goldGoods/createGoldGoods:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 创建goldGoods表
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/orderManager.GoldGoods'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"创建成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 创建goldGoods表
+      tags:
+      - GoldGoods
+  /goldGoods/deleteGoldGoods:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 删除goldGoods表
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/orderManager.GoldGoods'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除goldGoods表
+      tags:
+      - GoldGoods
+  /goldGoods/deleteGoldGoodsByIds:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 批量删除goldGoods表
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.IdsReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"批量删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 批量删除goldGoods表
+      tags:
+      - GoldGoods
+  /goldGoods/findGoldGoods:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 主键ID
+        in: query
+        name: ID
+        type: integer
+      - description: 商品创建人
+        in: query
+        name: createId
+        type: integer
+      - description: 创建时间
+        in: query
+        name: createTime
+        type: string
+      - description: 创建时间
+        in: query
+        name: createdAt
+        type: string
+      - description: 商品名称
+        in: query
+        name: goodsName
+        type: string
+      - description: 商品价格
+        in: query
+        name: goodsPrice
+        type: integer
+      - description: 商品分类Id
+        in: query
+        name: goodsTypeId
+        type: integer
+      - description: 商品更新人
+        in: query
+        name: updateId
+        type: integer
+      - description: 更新时间
+        in: query
+        name: updateTime
+        type: string
+      - description: 更新时间
+        in: query
+        name: updatedAt
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"查询成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 用id查询goldGoods表
+      tags:
+      - GoldGoods
+  /goldGoods/getGoldGoodsList:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - in: query
+        name: endCreatedAt
+        type: string
+      - description: 关键字
+        in: query
+        name: keyword
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页大小
+        in: query
+        name: pageSize
+        type: integer
+      - in: query
+        name: startCreatedAt
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 分页获取goldGoods表列表
+      tags:
+      - GoldGoods
+  /goldGoods/updateGoldGoods:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 更新goldGoods表
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/orderManager.GoldGoods'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"更新成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 更新goldGoods表
+      tags:
+      - GoldGoods
+  /goldGoodsFile/createGoldGoodsFile:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 创建goldGoodsFile表
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/orderManager.GoldGoodsFile'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"创建成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 创建goldGoodsFile表
+      tags:
+      - GoldGoodsFile
+  /goldGoodsFile/deleteGoldGoodsFile:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 删除goldGoodsFile表
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/orderManager.GoldGoodsFile'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除goldGoodsFile表
+      tags:
+      - GoldGoodsFile
+  /goldGoodsFile/deleteGoldGoodsFileByIds:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 批量删除goldGoodsFile表
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.IdsReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"批量删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 批量删除goldGoodsFile表
+      tags:
+      - GoldGoodsFile
+  /goldGoodsFile/findGoldGoodsFile:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 主键ID
+        in: query
+        name: ID
+        type: integer
+      - description: 创建人id
+        in: query
+        name: createId
+        type: integer
+      - description: 创建时间
+        in: query
+        name: createTime
+        type: string
+      - description: 创建时间
+        in: query
+        name: createdAt
+        type: string
+      - description: 文件名
+        in: query
+        name: fileName
+        type: string
+      - description: 文件路径
+        in: query
+        name: filePath
+        type: string
+      - description: 文件类型
+        in: query
+        name: fileType
+        type: boolean
+      - description: 商品Id
+        in: query
+        name: goodsId
+        type: integer
+      - description: 更新人Id
+        in: query
+        name: updateId
+        type: integer
+      - description: 更新时间
+        in: query
+        name: updateTime
+        type: string
+      - description: 更新时间
+        in: query
+        name: updatedAt
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"查询成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 用id查询goldGoodsFile表
+      tags:
+      - GoldGoodsFile
+  /goldGoodsFile/getGoldGoodsFileList:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - in: query
+        name: endCreatedAt
+        type: string
+      - description: 关键字
+        in: query
+        name: keyword
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页大小
+        in: query
+        name: pageSize
+        type: integer
+      - in: query
+        name: startCreatedAt
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 分页获取goldGoodsFile表列表
+      tags:
+      - GoldGoodsFile
+  /goldGoodsFile/updateGoldGoodsFile:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 更新goldGoodsFile表
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/orderManager.GoldGoodsFile'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"更新成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 更新goldGoodsFile表
+      tags:
+      - GoldGoodsFile
+  /goldShop/createGoldShop:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 创建goldShop表
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/orderManager.GoldShop'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"创建成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 创建goldShop表
+      tags:
+      - GoldShop
+  /goldShop/deleteGoldShop:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 删除goldShop表
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/orderManager.GoldShop'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除goldShop表
+      tags:
+      - GoldShop
+  /goldShop/deleteGoldShopByIds:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 批量删除goldShop表
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.IdsReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"批量删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 批量删除goldShop表
+      tags:
+      - GoldShop
+  /goldShop/findGoldShop:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 主键ID
+        in: query
+        name: ID
+        type: integer
+      - description: 购买人Id
+        in: query
+        name: buyId
+        type: integer
+      - description: 创建人Id
+        in: query
+        name: createId
+        type: integer
+      - description: 创建时间
+        in: query
+        name: createTime
+        type: string
+      - description: 创建时间
+        in: query
+        name: createdAt
+        type: string
+      - description: 商品Id
+        in: query
+        name: goodsId
+        type: integer
+      - description: 更新人Id
+        in: query
+        name: updateId
+        type: integer
+      - description: 更新时间
+        in: query
+        name: updateTime
+        type: string
+      - description: 更新时间
+        in: query
+        name: updatedAt
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"查询成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 用id查询goldShop表
+      tags:
+      - GoldShop
+  /goldShop/getGoldShopList:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - in: query
+        name: endCreatedAt
+        type: string
+      - description: 关键字
+        in: query
+        name: keyword
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页大小
+        in: query
+        name: pageSize
+        type: integer
+      - in: query
+        name: startCreatedAt
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 分页获取goldShop表列表
+      tags:
+      - GoldShop
+  /goldShop/updateGoldShop:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 更新goldShop表
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/orderManager.GoldShop'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"更新成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 更新goldShop表
+      tags:
+      - GoldShop
   /init/checkdb:
     post:
       produces:
@@ -3656,6 +4331,230 @@ paths:
       summary: 更新SysDictionaryDetail
       tags:
       - SysDictionaryDetail
+  /sysExportTemplate/createSysExportTemplate:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 创建导出模板
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/system.SysExportTemplate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"创建成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 创建导出模板
+      tags:
+      - SysExportTemplate
+  /sysExportTemplate/deleteSysExportTemplate:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 删除导出模板
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/system.SysExportTemplate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除导出模板
+      tags:
+      - SysExportTemplate
+  /sysExportTemplate/deleteSysExportTemplateByIds:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 批量删除导出模板
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.IdsReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"批量删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 批量删除导出模板
+      tags:
+      - SysExportTemplate
+  /sysExportTemplate/exportExcel:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: 导出表格模板
+      tags:
+      - SysExportTemplate
+  /sysExportTemplate/findSysExportTemplate:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 主键ID
+        in: query
+        name: ID
+        type: integer
+      - description: 创建时间
+        in: query
+        name: createdAt
+        type: string
+      - description: 模板名称
+        in: query
+        name: name
+        type: string
+      - description: 表名称
+        in: query
+        name: tableName
+        type: string
+      - description: 模板标识
+        in: query
+        name: templateID
+        type: string
+      - description: 模板信息
+        in: query
+        name: templateInfo
+        type: string
+      - description: 更新时间
+        in: query
+        name: updatedAt
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"查询成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 用id查询导出模板
+      tags:
+      - SysExportTemplate
+  /sysExportTemplate/getSysExportTemplateList:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 主键ID
+        in: query
+        name: ID
+        type: integer
+      - description: 创建时间
+        in: query
+        name: createdAt
+        type: string
+      - in: query
+        name: endCreatedAt
+        type: string
+      - description: 关键字
+        in: query
+        name: keyword
+        type: string
+      - description: 模板名称
+        in: query
+        name: name
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页大小
+        in: query
+        name: pageSize
+        type: integer
+      - in: query
+        name: startCreatedAt
+        type: string
+      - description: 表名称
+        in: query
+        name: tableName
+        type: string
+      - description: 模板标识
+        in: query
+        name: templateID
+        type: string
+      - description: 模板信息
+        in: query
+        name: templateInfo
+        type: string
+      - description: 更新时间
+        in: query
+        name: updatedAt
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 分页获取导出模板列表
+      tags:
+      - SysExportTemplate
+  /sysExportTemplate/importExcel:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses: {}
+      security:
+      - ApiKeyAuth: []
+      summary: 导入表格
+      tags:
+      - SysImportTemplate
+  /sysExportTemplate/updateSysExportTemplate:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 更新导出模板
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/system.SysExportTemplate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"更新成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 更新导出模板
+      tags:
+      - SysExportTemplate
   /sysOperationRecord/createSysOperationRecord:
     post:
       consumes:
