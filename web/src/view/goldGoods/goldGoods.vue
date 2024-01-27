@@ -97,7 +97,7 @@
             formatDate(scope.row.CreatedAt)
           }}</template>
         </el-table-column>
-        <el-table-column align="left" label="商品分类Id" width="120">
+        <el-table-column align="left" label="商品分类" width="120">
           <template #default="scope">{{
             convertGoodsTypeId(scope.row.goodsTypeId)
           }}</template>
@@ -227,10 +227,13 @@
             <div>
               <el-upload
                 v-model:file-list="fileList"
-                action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
+                :action="`${path}/fileUploadAndDownload/upload`"
                 list-type="picture-card"
                 :on-preview="handlePictureCardPreview"
                 :on-remove="handleRemove"
+                :on-success="uploadSuccess"
+                :on-error="uploadError"
+                :show-file-list="true"
               >
                 <el-icon><Plus /></el-icon>
               </el-upload>
@@ -239,24 +242,6 @@
                 <img w-full :src="dialogImageUrl" alt="Preview Image" />
               </el-dialog>
             </div>
-            <!-- <div class="header-img-box-list">
-              <el-image :src="imageCommon">
-                <template #error>
-                  <div class="header-img-box-list">
-                    <el-icon>
-                      <picture />
-                    </el-icon>
-                  </div>
-                </template>
-              </el-image>
-            </div>
-            <div class="gva-btn-list">
-              <upload-common
-                v-model="imageCommon"
-                class="upload-btn-media-library"
-                @on-success="printImages"
-              />
-            </div> -->
           </el-form-item>
         </el-form>
       </el-scrollbar>
@@ -315,10 +300,8 @@ import {
   updateGoldGoods,
 } from "@/api/goldGoods";
 
-import UploadCommon from "@/components/upload/common.vue";
-import { Plus } from "@element-plus/icons-vue";
-
 import { getSysDictionaryDetailList } from "@/api/sysDictionaryDetail";
+import { Plus } from "@element-plus/icons-vue";
 
 // 全量引入格式化工具 请按需保留
 import { formatDate } from "@/utils/format";
@@ -630,45 +613,23 @@ const enterDialog = async () => {
   });
 };
 
-const imageCommon = ref("");
-const printImages = (res) => {
-  console.log("res==", res);
-  imageCommon.value = res;
-  console.log(imageCommon.value);
-};
-
+const path = ref(import.meta.env.VITE_BASE_API);
 const fileList = ref([
   {
     name: "food.jpeg",
     url: "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
   },
   {
-    name: "plant-1.png",
-    url: "/images/plant-1.png",
+    name: "food.jpeg",
+    url: "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
   },
   {
     name: "food.jpeg",
     url: "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
   },
   {
-    name: "plant-2.png",
-    url: "/images/plant-2.png",
-  },
-  {
     name: "food.jpeg",
     url: "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
-  },
-  {
-    name: "figure-1.png",
-    url: "/images/figure-1.png",
-  },
-  {
-    name: "food.jpeg",
-    url: "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
-  },
-  {
-    name: "figure-2.png",
-    url: "/images/figure-2.png",
   },
 ]);
 
@@ -676,12 +637,31 @@ const dialogImageUrl = ref("");
 const dialogVisible = ref(false);
 
 const handleRemove = (uploadFile, uploadFiles) => {
+  console.log("handleRemove");
   console.log(uploadFile, uploadFiles);
 };
 
 const handlePictureCardPreview = (uploadFile) => {
   dialogImageUrl.value = uploadFile.url;
   dialogVisible.value = true;
+};
+
+const uploadSuccess = (res) => {
+  console.log("uploadSuccess", res.data);
+  console.log(fileList.value);
+  // fileList.value.push({
+  //   name: res.data.file.key,
+  //   url: res.data.file.url,
+  // });
+  // console.log(fileList.value);
+};
+
+const uploadError = () => {
+  console.log("baocuo");
+  ElMessage({
+    type: "error",
+    message: "上传失败",
+  });
 };
 </script>
 

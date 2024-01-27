@@ -6,6 +6,8 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/orderManager"
 	orderManagerReq "github.com/flipped-aurora/gin-vue-admin/server/model/orderManager/request"
+	orderManagerResp "github.com/flipped-aurora/gin-vue-admin/server/model/orderManager/response"
+	systemModel "github.com/flipped-aurora/gin-vue-admin/server/model/system"
 )
 
 type GoldGoodsService struct {
@@ -73,9 +75,41 @@ func (goldGoodsService *GoldGoodsService) UpdateGoldGoods(goldGoods orderManager
 
 // GetGoldGoods 根据id获取goldGoods表记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (goldGoodsService *GoldGoodsService) GetGoldGoods(id string) (goldGoods orderManager.GoldGoods, err error) {
+func (goldGoodsService *GoldGoodsService) GetGoldGoods(id string) (goldGoodsWithFiles orderManagerResp.GoldGoodsResp, err error) {
+	goldGoods := orderManager.GoldGoods{}
 	err = global.GVA_DB.Where("id = ?", id).First(&goldGoods).Error
-	return
+	goldGoodsFileList := []orderManager.GoldGoodsFile{}
+	global.GVA_DB.Where("goods_id = ?", id).Find(&goldGoodsFileList)
+	sysUserList := []systemModel.SysUser{}
+	global.GVA_DB.Find(&sysUserList)
+	sysUserMap := make(map[uint]systemModel.SysUser)
+	for _, element := range sysUserList {
+		sysUserMap[element.ID] = element
+	}
+	goldGoodsWithFiles = orderManagerResp.GoldGoodsResp{
+		ID:          goldGoods.ID,
+		GoodsTypeId: goldGoods.GoodsTypeId,
+		GoodsName:   goldGoods.GoodsName,
+		GoodsPrice:  goldGoods.GoodsPrice,
+		CreateName:  sysUserMap[uint(*goldGoods.CreateId)].Username,
+		CreateTime:  goldGoods.CreateTime,
+		UpdateName:  sysUserMap[uint(*goldGoods.UpdateId)].Username,
+		UpdateTime:  goldGoods.UpdateTime,
+	}
+	for _, item := range goldGoodsFileList {
+		resp := orderManagerResp.GoldGoodsFileResp{
+			ID:         item.ID,
+			GoodsId:    item.GoodsId,
+			FileName:   item.FileName,
+			FilePath:   item.FilePath,
+			CreateName: sysUserMap[uint(*item.CreateId)].Username,
+			CreateTime: item.CreateTime,
+			UpdateName: sysUserMap[uint(*item.UpdateId)].Username,
+			UpdateTime: item.UpdateTime,
+		}
+		goldGoodsWithFiles.GoldGoodsFileList = append(goldGoodsWithFiles.GoldGoodsFileList, resp)
+	}
+	return goldGoodsWithFiles, err
 }
 
 // GetGoldGoodsInfoList 分页获取goldGoods表记录
