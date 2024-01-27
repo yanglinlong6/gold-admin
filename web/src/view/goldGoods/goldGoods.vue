@@ -117,7 +117,7 @@
         <el-table-column
           align="left"
           label="商品创建人"
-          prop="createId"
+          prop="createName"
           width="120"
         />
         <el-table-column align="left" label="创建时间" width="180">
@@ -128,7 +128,7 @@
         <el-table-column
           align="left"
           label="商品更新人"
-          prop="updateId"
+          prop="updateName"
           width="120"
         />
         <el-table-column align="left" label="更新时间" width="180">
@@ -273,16 +273,35 @@
             {{ formData.goodsPrice }}
           </el-descriptions-item>
           <el-descriptions-item label="商品创建人">
-            {{ formData.createId }}
+            {{ formData.createName }}
           </el-descriptions-item>
           <el-descriptions-item label="创建时间">
             {{ formatDate(formData.createTime) }}
           </el-descriptions-item>
           <el-descriptions-item label="商品更新人">
-            {{ formData.updateId }}
+            {{ formData.updateName }}
           </el-descriptions-item>
           <el-descriptions-item label="更新时间">
             {{ formatDate(formData.updateTime) }}
+          </el-descriptions-item>
+          <el-descriptions-item label="照片">
+            <div>
+              <el-upload
+                v-model:file-list="fileList"
+                :action="`${path}/fileUploadAndDownload/upload`"
+                list-type="picture-card"
+                :on-preview="handlePictureCardPreview"
+                :on-remove="handleRemove"
+                :on-success="uploadSuccess"
+                :on-error="uploadError"
+                :show-file-list="true"
+                :disabled="true"
+              >
+              </el-upload>
+              <el-dialog v-model="dialogVisible">
+                <img w-full :src="dialogImageUrl" alt="Preview Image" />
+              </el-dialog>
+            </div>
           </el-descriptions-item>
         </el-descriptions>
       </el-scrollbar>
@@ -314,16 +333,35 @@ defineOptions({
 
 // 自动化生成的字典（可能为空）以及字段
 const formData = ref({
+  ID: 0,
   goodsTypeId: 1,
   goodsName: "",
   goodsPrice: 0,
-  createId: 0,
+  createName: "",
   createTime: new Date(),
-  updateId: 0,
+  updateName: "",
+  updateTime: new Date(),
+  goldGoodsFileList: [],
+});
+
+const goldGoodsFile = ref({
+  ID: 0,
+  goodsId: 0,
+  fileName: "",
+  fileType: 0,
+  filePath: "",
+  createName: "",
+  createTime: new Date(),
+  updateName: "",
   updateTime: new Date(),
 });
 
 const options = ref([]);
+const path = ref(import.meta.env.VITE_BASE_API);
+const fileList = ref([]);
+
+const dialogImageUrl = ref("");
+const dialogVisible = ref(false);
 
 // 查询
 const getGoodsTypeIdList = async () => {
@@ -513,6 +551,7 @@ const updateGoldGoodsFunc = async (row) => {
   type.value = "update";
   if (res.code === 0) {
     formData.value = res.data.regoldGoods;
+    fileList.value = res.data.regoldGoods.goldGoodsFileList;
     dialogFormVisible.value = true;
   }
 };
@@ -549,6 +588,8 @@ const getDetails = async (row) => {
   const res = await findGoldGoods({ ID: row.ID });
   if (res.code === 0) {
     formData.value = res.data.regoldGoods;
+    console.log("formData", res.data.regoldGoods);
+    fileList.value = res.data.regoldGoods.goldGoodsFileList;
     openDetailShow();
   }
 };
@@ -560,9 +601,9 @@ const closeDetailShow = () => {
     goodsTypeId: 1,
     goodsName: "",
     goodsPrice: 0,
-    createId: 0,
+    createName: "",
     createTime: new Date(),
-    updateId: 0,
+    updateName: "",
     updateTime: new Date(),
   };
 };
@@ -580,9 +621,9 @@ const closeDialog = () => {
     goodsTypeId: 1,
     goodsName: "",
     goodsPrice: 0,
-    createId: 0,
+    createName: "",
     createTime: new Date(),
-    updateId: 0,
+    updateName: "",
     updateTime: new Date(),
   };
 };
@@ -613,32 +654,18 @@ const enterDialog = async () => {
   });
 };
 
-const path = ref(import.meta.env.VITE_BASE_API);
-const fileList = ref([
-  {
-    name: "food.jpeg",
-    url: "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
-  },
-  {
-    name: "food.jpeg",
-    url: "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
-  },
-  {
-    name: "food.jpeg",
-    url: "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
-  },
-  {
-    name: "food.jpeg",
-    url: "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
-  },
-]);
-
-const dialogImageUrl = ref("");
-const dialogVisible = ref(false);
-
 const handleRemove = (uploadFile, uploadFiles) => {
   console.log("handleRemove");
   console.log(uploadFile, uploadFiles);
+  uploadFiles.splice(index, uploadFiles.indexOf(uploadFile) - 1);
+  formData.value.goldGoodsFileList.splice(
+    index,
+    formData.value.goldGoodsFileList.indexOf(uploadFile) - 1
+  );
+  ElMessage({
+    message: "删除成功",
+    type: "success",
+  });
 };
 
 const handlePictureCardPreview = (uploadFile) => {
@@ -649,11 +676,12 @@ const handlePictureCardPreview = (uploadFile) => {
 const uploadSuccess = (res) => {
   console.log("uploadSuccess", res.data);
   console.log(fileList.value);
-  // fileList.value.push({
-  //   name: res.data.file.key,
-  //   url: res.data.file.url,
-  // });
-  // console.log(fileList.value);
+  formData.value.goldGoodsFileList.push({
+    fileName: res.data.file.key,
+    filePath: res.data.file.url,
+  });
+  console.log("fileList", fileList.value);
+  console.log("formData", formData.value.goldGoodsFileList);
 };
 
 const uploadError = () => {

@@ -27,14 +27,20 @@ var goldGoodsService = service.ServiceGroupApp.OrderManagerServiceGroup.GoldGood
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"创建成功"}"
 // @Router /goldGoods/createGoldGoods [post]
 func (goldGoodsApi *GoldGoodsApi) CreateGoldGoods(c *gin.Context) {
-	var goldGoods orderManager.GoldGoods
-	err := c.ShouldBindJSON(&goldGoods)
+	userId, err := strconv.Atoi(c.Request.Header.Get("x-user-id"))
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
 
-	if err := goldGoodsService.CreateGoldGoods(&goldGoods); err != nil {
+	var goldGoods orderManager.GoldGoods
+	err = c.ShouldBindJSON(&goldGoods)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	if err := goldGoodsService.CreateGoldGoods(&goldGoods, userId); err != nil {
 		global.GVA_LOG.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
 	} else {
@@ -102,8 +108,14 @@ func (goldGoodsApi *GoldGoodsApi) DeleteGoldGoods(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"批量删除成功"}"
 // @Router /goldGoods/deleteGoldGoodsByIds [delete]
 func (goldGoodsApi *GoldGoodsApi) DeleteGoldGoodsByIds(c *gin.Context) {
+	userId, err := strconv.Atoi(c.Request.Header.Get("x-user-id"))
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
 	ids := c.QueryArray("ids[]")
-	if err := goldGoodsService.DeleteGoldGoodsByIds(ids); err != nil {
+	if err := goldGoodsService.DeleteGoldGoodsByIds(ids, userId); err != nil {
 		global.GVA_LOG.Error("批量删除失败!", zap.Error(err))
 		response.FailWithMessage("批量删除失败", c)
 	} else {
@@ -117,18 +129,24 @@ func (goldGoodsApi *GoldGoodsApi) DeleteGoldGoodsByIds(c *gin.Context) {
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body orderManager.GoldGoods true "更新goldGoods表"
+// @Param data body orderManagerReq.AddGoldGoodsRequest true "更新goldGoods表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"更新成功"}"
 // @Router /goldGoods/updateGoldGoods [put]
 func (goldGoodsApi *GoldGoodsApi) UpdateGoldGoods(c *gin.Context) {
-	var goldGoods orderManager.GoldGoods
-	err := c.ShouldBindJSON(&goldGoods)
+	userId, err := strconv.Atoi(c.Request.Header.Get("x-user-id"))
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
 
-	if err := goldGoodsService.UpdateGoldGoods(goldGoods); err != nil {
+	var addGoldGoodsAndFiles orderManagerReq.AddGoldGoodsRequest
+	err = c.ShouldBindJSON(&addGoldGoodsAndFiles)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	if err := goldGoodsService.UpdateGoldGoods(addGoldGoodsAndFiles, userId); err != nil {
 		global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
 	} else {

@@ -1,6 +1,7 @@
 package orderManager
 
 import (
+	"log"
 	"time"
 
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
@@ -15,7 +16,10 @@ type GoldGoodsService struct {
 
 // CreateGoldGoods 创建goldGoods表记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (goldGoodsService *GoldGoodsService) CreateGoldGoods(goldGoods *orderManager.GoldGoods) (err error) {
+func (goldGoodsService *GoldGoodsService) CreateGoldGoods(goldGoods *orderManager.GoldGoods, userId int) (err error) {
+	goldGoods.CreateId = &userId
+	currentTime := time.Now()
+	goldGoods.CreateTime = &currentTime
 	err = global.GVA_DB.Create(goldGoods).Error
 	return err
 }
@@ -38,7 +42,7 @@ func (goldGoodsService *GoldGoodsService) AddGoldGoodsAndFiles(addGoldGoodsAndFi
 		goldGoodsFile := &orderManager.GoldGoodsFile{
 			GoodsId:    &goldGoods.ID,
 			FileName:   v.FileName,
-			FileType:   v.FileType,
+			FileType:   new(int),
 			FilePath:   v.FilePath,
 			CreateId:   &userId,
 			CreateTime: &currentTime,
@@ -61,15 +65,57 @@ func (goldGoodsService *GoldGoodsService) DeleteGoldGoods(id string) (err error)
 
 // DeleteGoldGoodsByIds 批量删除goldGoods表记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (goldGoodsService *GoldGoodsService) DeleteGoldGoodsByIds(ids []string) (err error) {
+func (goldGoodsService *GoldGoodsService) DeleteGoldGoodsByIds(ids []string, userId int) (err error) {
 	err = global.GVA_DB.Delete(&[]orderManager.GoldGoods{}, "id in ?", ids).Error
 	return err
 }
 
 // UpdateGoldGoods 更新goldGoods表记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (goldGoodsService *GoldGoodsService) UpdateGoldGoods(goldGoods orderManager.GoldGoods) (err error) {
-	err = global.GVA_DB.Save(&goldGoods).Error
+func (goldGoodsService *GoldGoodsService) UpdateGoldGoods(addGoldGoodsAndFiles orderManagerReq.AddGoldGoodsRequest, userId int) (err error) {
+	log.Println("addGoldGoodsAndFiles", addGoldGoodsAndFiles.GoldGoodsFileList)
+	currentTime := time.Now()
+	goldGoods := &orderManager.GoldGoods{}
+	global.GVA_DB.First(&goldGoods, addGoldGoodsAndFiles.ID)
+	goldGoods.GoodsTypeId = addGoldGoodsAndFiles.GoodsTypeId
+	goldGoods.GoodsName = addGoldGoodsAndFiles.GoodsName
+	goldGoods.GoodsPrice = addGoldGoodsAndFiles.GoodsPrice
+	goldGoods.UpdateId = &userId
+	goldGoods.UpdateTime = &currentTime
+	err = global.GVA_DB.Save(goldGoods).Error
+	if err != nil {
+		return err
+	}
+
+	for _, v := range addGoldGoodsAndFiles.GoldGoodsFileList {
+		if v.ID != nil {
+			goldGoodsFile := &orderManager.GoldGoodsFile{}
+			global.GVA_DB.First(&goldGoodsFile, v.ID)
+			goldGoodsFile.GoodsId = &goldGoods.ID
+			goldGoodsFile.FileName = v.FileName
+			goldGoodsFile.FileType = new(int)
+			goldGoodsFile.FilePath = v.FilePath
+			goldGoodsFile.UpdateId = &userId
+			goldGoodsFile.UpdateTime = &currentTime
+			err = global.GVA_DB.Save(&goldGoodsFile).Error
+			if err != nil {
+				return err
+			}
+		} else {
+			goldGoodsFile := &orderManager.GoldGoodsFile{
+				GoodsId:    &goldGoods.ID,
+				FileName:   v.FileName,
+				FileType:   new(int),
+				FilePath:   v.FilePath,
+				UpdateId:   &userId,
+				UpdateTime: &currentTime,
+			}
+			err = global.GVA_DB.Save(&goldGoodsFile).Error
+			if err != nil {
+				return err
+			}
+		}
+	}
 	return err
 }
 
@@ -78,8 +124,15 @@ func (goldGoodsService *GoldGoodsService) UpdateGoldGoods(goldGoods orderManager
 func (goldGoodsService *GoldGoodsService) GetGoldGoods(id string) (goldGoodsWithFiles orderManagerResp.GoldGoodsResp, err error) {
 	goldGoods := orderManager.GoldGoods{}
 	err = global.GVA_DB.Where("id = ?", id).First(&goldGoods).Error
+	if goldGoods.CreateId == nil {
+		goldGoods.CreateId = new(int)
+	}
+	if goldGoods.UpdateId == nil {
+		goldGoods.UpdateId = new(int)
+	}
 	goldGoodsFileList := []orderManager.GoldGoodsFile{}
 	global.GVA_DB.Where("goods_id = ?", id).Find(&goldGoodsFileList)
+	log.Printf("%+v\n", goldGoodsFileList)
 	sysUserList := []systemModel.SysUser{}
 	global.GVA_DB.Find(&sysUserList)
 	sysUserMap := make(map[uint]systemModel.SysUser)
@@ -96,7 +149,14 @@ func (goldGoodsService *GoldGoodsService) GetGoldGoods(id string) (goldGoodsWith
 		UpdateName:  sysUserMap[uint(*goldGoods.UpdateId)].Username,
 		UpdateTime:  goldGoods.UpdateTime,
 	}
+
 	for _, item := range goldGoodsFileList {
+		if item.CreateId == nil {
+			item.CreateId = new(int)
+		}
+		if item.UpdateId == nil {
+			item.UpdateId = new(int)
+		}
 		resp := orderManagerResp.GoldGoodsFileResp{
 			ID:         item.ID,
 			GoodsId:    item.GoodsId,
@@ -109,6 +169,7 @@ func (goldGoodsService *GoldGoodsService) GetGoldGoods(id string) (goldGoodsWith
 		}
 		goldGoodsWithFiles.GoldGoodsFileList = append(goldGoodsWithFiles.GoldGoodsFileList, resp)
 	}
+	log.Printf("%+v\n", goldGoodsWithFiles)
 	return goldGoodsWithFiles, err
 }
 
@@ -133,6 +194,6 @@ func (goldGoodsService *GoldGoodsService) GetGoldGoodsInfoList(info orderManager
 		db = db.Limit(limit).Offset(offset)
 	}
 
-	err = db.Find(&goldGoodss).Error
+	err = db.Order("id desc").Find(&goldGoodss).Error
 	return goldGoodss, total, err
 }
