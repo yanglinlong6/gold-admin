@@ -626,6 +626,7 @@ const closeDialog = () => {
     updateName: "",
     updateTime: new Date(),
   };
+  fileList.value = [];
 };
 // 弹窗确定
 const enterDialog = async () => {
