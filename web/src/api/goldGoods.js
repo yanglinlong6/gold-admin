@@ -10,7 +10,8 @@ import service from '@/utils/request'
 // @Router /goldGoods/createGoldGoods [post]
 export const createGoldGoods = (data) => {
   return service({
-    url: '/goldGoods/createGoldGoods',
+    // url: '/goldGoods/createGoldGoods',
+    url: '/goldGoods/addGoldGoodsAndFiles',
     method: 'post',
     data
   })

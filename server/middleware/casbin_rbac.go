@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"log"
 	"strconv"
 	"strings"
 
@@ -27,6 +28,8 @@ func CasbinHandler() gin.HandlerFunc {
 			sub := strconv.Itoa(int(waitUse.AuthorityId))
 			e := casbinService.Casbin() // 判断策略中是否存在
 			success, _ := e.Enforce(sub, obj, act)
+			log.Println("path:", path, "==obj:", obj, "==act:", act, "==sub:", sub, "==success", success)
+			// log.Println("success:", success)
 			if !success {
 				response.FailWithDetailed(gin.H{}, "权限不足", c)
 				c.Abort()

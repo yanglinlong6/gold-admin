@@ -84,8 +84,8 @@
       destroy-on-close>
       <el-scrollbar height="500px">
         <el-form :model="formData" label-position="right" ref="elFormRef" :rules="rule" label-width="100px">
-          <el-form-item label="商品分类Id:" prop="goodsTypeId">
-            <el-select v-model.number="formData.goodsTypeId" class="m-2" placeholder="请选择商品分类Id" size="small"
+          <el-form-item label="商品分类:" prop="goodsTypeId">
+            <el-select v-model.number="formData.goodsTypeId" class="m-2" placeholder="请选择商品分类" size="small"
               :clearable="true">
               <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
             </el-select>
@@ -95,20 +95,6 @@
           </el-form-item>
           <el-form-item label="商品价格:" prop="goodsPrice">
             <el-input v-model.number="formData.goodsPrice" :clearable="true" placeholder="请输入商品价格" />
-          </el-form-item>
-          <el-form-item label="商品创建人:" prop="createId">
-            <el-input v-model.number="formData.createId" :clearable="true" placeholder="请输入商品创建人" />
-          </el-form-item>
-          <el-form-item label="创建时间:" prop="createTime">
-            <el-date-picker v-model="formData.createTime" type="date" style="width:100%" placeholder="选择日期"
-              :clearable="true" />
-          </el-form-item>
-          <el-form-item label="商品更新人:" prop="updateId">
-            <el-input v-model.number="formData.updateId" :clearable="true" placeholder="请输入商品更新人" />
-          </el-form-item>
-          <el-form-item label="更新时间:" prop="updateTime">
-            <el-date-picker v-model="formData.updateTime" type="date" style="width:100%" placeholder="选择日期"
-              :clearable="true" />
           </el-form-item>
           <el-form-item label="上传图片">
             <div class="gva-btn-list">
@@ -158,18 +144,18 @@
 
 <script setup>
 import {
-createGoldGoods,
-deleteGoldGoods,
-deleteGoldGoodsByIds,
-findGoldGoods,
-getGoldGoodsList,
-updateGoldGoods
+  createGoldGoods,
+  deleteGoldGoods,
+  deleteGoldGoodsByIds,
+  findGoldGoods,
+  getGoldGoodsList,
+  updateGoldGoods
 } from '@/api/goldGoods'
 
 import UploadCommon from '@/components/upload/common.vue'
 
 import {
-getSysDictionaryDetailList
+  getSysDictionaryDetailList
 } from '@/api/sysDictionaryDetail'
 
 // 全量引入格式化工具 请按需保留
@@ -426,7 +412,7 @@ const getDetails = async (row) => {
 const closeDetailShow = () => {
   detailShow.value = false
   formData.value = {
-    goodsTypeId: 0,
+    goodsTypeId: 1,
     goodsName: '',
     goodsPrice: 0,
     createId: 0,
@@ -447,7 +433,7 @@ const openDialog = () => {
 const closeDialog = () => {
   dialogFormVisible.value = false
   formData.value = {
-    goodsTypeId: 0,
+    goodsTypeId: 1,
     goodsName: '',
     goodsPrice: 0,
     createId: 0,
