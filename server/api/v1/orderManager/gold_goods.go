@@ -54,6 +54,7 @@ func (goldGoodsApi *GoldGoodsApi) CreateGoldGoods(c *gin.Context) {
 func (goldGoodsApi *GoldGoodsApi) AddGoldGoodsAndFiles(c *gin.Context) {
 	userId, err := strconv.Atoi(c.Request.Header.Get("x-user-id"))
 	if err != nil {
+		response.FailWithMessage(err.Error(), c)
 		return
 	}
 
