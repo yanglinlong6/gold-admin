@@ -1,6 +1,8 @@
 package orderManager
 
 import (
+	"strconv"
+
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/orderManager"
@@ -50,14 +52,19 @@ func (goldGoodsApi *GoldGoodsApi) CreateGoldGoods(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"创建成功"}"
 // @Router /goldGoods/AddGoldGoodsAndFiles [post]
 func (goldGoodsApi *GoldGoodsApi) AddGoldGoodsAndFiles(c *gin.Context) {
+	userId, err := strconv.Atoi(c.Request.Header.Get("x-user-id"))
+	if err != nil {
+		return
+	}
+
 	var addGoldGoodsAndFiles orderManagerReq.AddGoldGoodsRequest
-	err := c.ShouldBindJSON(&addGoldGoodsAndFiles)
+	err = c.ShouldBindJSON(&addGoldGoodsAndFiles)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
 
-	if err := goldGoodsService.AddGoldGoodsAndFiles(&addGoldGoodsAndFiles); err != nil {
+	if err := goldGoodsService.AddGoldGoodsAndFiles(&addGoldGoodsAndFiles, userId); err != nil {
 		global.GVA_LOG.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
 	} else {

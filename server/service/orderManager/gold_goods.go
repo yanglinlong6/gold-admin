@@ -1,6 +1,8 @@
 package orderManager
 
 import (
+	"time"
+
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/orderManager"
 	orderManagerReq "github.com/flipped-aurora/gin-vue-admin/server/model/orderManager/request"
@@ -16,11 +18,14 @@ func (goldGoodsService *GoldGoodsService) CreateGoldGoods(goldGoods *orderManage
 	return err
 }
 
-func (goldGoodsService *GoldGoodsService) AddGoldGoodsAndFiles(addGoldGoodsAndFiles *orderManagerReq.AddGoldGoodsRequest) (err error) {
+func (goldGoodsService *GoldGoodsService) AddGoldGoodsAndFiles(addGoldGoodsAndFiles *orderManagerReq.AddGoldGoodsRequest, userId int) (err error) {
+	currentTime := time.Now()
 	goldGoods := &orderManager.GoldGoods{
 		GoodsTypeId: addGoldGoodsAndFiles.GoodsTypeId,
 		GoodsName:   addGoldGoodsAndFiles.GoodsName,
 		GoodsPrice:  addGoldGoodsAndFiles.GoodsPrice,
+		CreateId:    &userId,
+		CreateTime:  &currentTime,
 	}
 	err = global.GVA_DB.Create(goldGoods).Error
 	if err != nil {
@@ -29,10 +34,12 @@ func (goldGoodsService *GoldGoodsService) AddGoldGoodsAndFiles(addGoldGoodsAndFi
 
 	for _, v := range addGoldGoodsAndFiles.GoldGoodsFileList {
 		goldGoodsFile := &orderManager.GoldGoodsFile{
-			GoodsId:  &goldGoods.ID,
-			FileName: v.FileName,
-			FileType: v.FileType,
-			FilePath: v.FilePath,
+			GoodsId:    &goldGoods.ID,
+			FileName:   v.FileName,
+			FileType:   v.FileType,
+			FilePath:   v.FilePath,
+			CreateId:   &userId,
+			CreateTime: &currentTime,
 		}
 
 		err = global.GVA_DB.Create(goldGoodsFile).Error

@@ -60,7 +60,8 @@ func (*MinIO) UploadFile(file *multipart.FileHeader) (string, string, error) {
 		global.GVA_LOG.Error("function MinioConnection() failed", zap.Any("err", err.Error()))
 		return "", "", errors.New("function MinioConnection() failed, err:" + err.Error())
 	}
-	return info.Location, info.Key, err
+	log.Println("info===", info)
+	return "https://minio.linux008.com/minio/gold/" + info.Key, info.Key, err
 }
 
 //@author: [piexlmax](https://github.com/piexlmax)

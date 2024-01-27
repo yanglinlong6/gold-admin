@@ -110,6 +110,11 @@
             <el-date-picker v-model="formData.updateTime" type="date" style="width:100%" placeholder="选择日期"
               :clearable="true" />
           </el-form-item>
+          <el-form-item label="上传图片">
+            <div class="gva-btn-list">
+              <upload-common v-model:imageCommon="imageCommon" class="upload-btn-media-library" @on-success="" />
+            </div>
+          </el-form-item>
         </el-form>
       </el-scrollbar>
       <template #footer>
@@ -153,16 +158,18 @@
 
 <script setup>
 import {
-  createGoldGoods,
-  deleteGoldGoods,
-  deleteGoldGoodsByIds,
-  findGoldGoods,
-  getGoldGoodsList,
-  updateGoldGoods
+createGoldGoods,
+deleteGoldGoods,
+deleteGoldGoodsByIds,
+findGoldGoods,
+getGoldGoodsList,
+updateGoldGoods
 } from '@/api/goldGoods'
 
+import UploadCommon from '@/components/upload/common.vue'
+
 import {
-  getSysDictionaryDetailList
+getSysDictionaryDetailList
 } from '@/api/sysDictionaryDetail'
 
 // 全量引入格式化工具 请按需保留
@@ -475,6 +482,8 @@ const enterDialog = async () => {
     }
   })
 }
+
+const imageCommon = ref('')
 
 </script>
 
