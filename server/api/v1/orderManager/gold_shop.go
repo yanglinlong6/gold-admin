@@ -1,6 +1,9 @@
 package orderManager
 
 import (
+	"log"
+	"strconv"
+
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/orderManager"
@@ -25,14 +28,19 @@ var goldShopService = service.ServiceGroupApp.OrderManagerServiceGroup.GoldShopS
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"创建成功"}"
 // @Router /goldShop/createGoldShop [post]
 func (goldShopApi *GoldShopApi) CreateGoldShop(c *gin.Context) {
+	userId, err := strconv.Atoi(c.Request.Header.Get("x-user-id"))
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
 	var goldShop orderManager.GoldShop
-	err := c.ShouldBindJSON(&goldShop)
+	err = c.ShouldBindJSON(&goldShop)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
 
-	if err := goldShopService.CreateGoldShop(&goldShop); err != nil {
+	if err := goldShopService.CreateGoldShop(&goldShop, userId); err != nil {
 		global.GVA_LOG.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
 	} else {
@@ -88,14 +96,19 @@ func (goldShopApi *GoldShopApi) DeleteGoldShopByIds(c *gin.Context) {
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"更新成功"}"
 // @Router /goldShop/updateGoldShop [put]
 func (goldShopApi *GoldShopApi) UpdateGoldShop(c *gin.Context) {
+	userId, err := strconv.Atoi(c.Request.Header.Get("x-user-id"))
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
 	var goldShop orderManager.GoldShop
-	err := c.ShouldBindJSON(&goldShop)
+	err = c.ShouldBindJSON(&goldShop)
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
 
-	if err := goldShopService.UpdateGoldShop(goldShop); err != nil {
+	if err := goldShopService.UpdateGoldShop(goldShop, userId); err != nil {
 		global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
 	} else {
@@ -109,11 +122,12 @@ func (goldShopApi *GoldShopApi) UpdateGoldShop(c *gin.Context) {
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data query orderManager.GoldShop true "用id查询goldShop表"
+// @Param data query orderManagerResp.GoldShopResp true "用id查询goldShop表"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
 // @Router /goldShop/findGoldShop [get]
 func (goldShopApi *GoldShopApi) FindGoldShop(c *gin.Context) {
 	id := c.Query("ID")
+	log.Println("id===", id)
 	if regoldShop, err := goldShopService.GetGoldShop(id); err != nil {
 		global.GVA_LOG.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)

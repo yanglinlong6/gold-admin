@@ -219,7 +219,14 @@ func (goldGoodsService *GoldGoodsService) GetGoldGoods(id string) (goldGoodsWith
 
 // GetGoldGoodsInfoList 分页获取goldGoods表记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (goldGoodsService *GoldGoodsService) GetGoldGoodsInfoList(info orderManagerReq.GoldGoodsSearch) (list []orderManager.GoldGoods, total int64, err error) {
+func (goldGoodsService *GoldGoodsService) GetGoldGoodsInfoList(info orderManagerReq.GoldGoodsSearch) (list []orderManagerResp.GoldGoodsListResp, total int64, err error) {
+	sysUserList := []systemModel.SysUser{}
+	global.GVA_DB.Find(&sysUserList)
+	sysUserMap := make(map[uint]systemModel.SysUser)
+	for _, element := range sysUserList {
+		sysUserMap[element.ID] = element
+	}
+
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	// 创建db
@@ -239,5 +246,26 @@ func (goldGoodsService *GoldGoodsService) GetGoldGoodsInfoList(info orderManager
 	}
 
 	err = db.Order("id desc").Find(&goldGoodss).Error
-	return goldGoodss, total, err
+	goldGoodsListResp := []orderManagerResp.GoldGoodsListResp{}
+	for _, item := range goldGoodss {
+		if item.CreateId == nil {
+			item.CreateId = new(int)
+		}
+		if item.UpdateId == nil {
+			item.UpdateId = new(int)
+		}
+
+		one := orderManagerResp.GoldGoodsListResp{
+			ID:          item.ID,
+			GoodsTypeId: item.GoodsTypeId,
+			GoodsName:   item.GoodsName,
+			GoodsPrice:  item.GoodsPrice,
+			CreateName:  sysUserMap[uint(*item.CreateId)].Username,
+			CreateTime:  item.CreateTime,
+			UpdateName:  sysUserMap[uint(*item.UpdateId)].Username,
+			UpdateTime:  item.UpdateTime,
+		}
+		goldGoodsListResp = append(goldGoodsListResp, one)
+	}
+	return goldGoodsListResp, total, err
 }

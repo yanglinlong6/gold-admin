@@ -29,3 +29,15 @@ type GoldGoodsFileResp struct {
 	UpdateName string     `json:"updateName"` //更新人创建人
 	UpdateTime *time.Time `json:"updateTime"` //更新时间
 }
+
+// goldGoods表 结构体  GoldGoods
+type GoldGoodsListResp struct {
+	ID          uint       `json:"ID"`          // 主键ID
+	GoodsTypeId *int       `json:"goodsTypeId"` //商品分类Id
+	GoodsName   string     `json:"goodsName"`   //商品名称
+	GoodsPrice  *int       `json:"goodsPrice"`  //商品价格
+	CreateName  string     `json:"createName"`  //商品创建人
+	CreateTime  *time.Time `json:"createTime"`  //创建时间
+	UpdateName  string     `json:"updateName"`  //商品更新人
+	UpdateTime  *time.Time `json:"updateTime"`  //更新时间
+}
