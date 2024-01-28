@@ -86,9 +86,26 @@ func (goldGoodsService *GoldGoodsService) UpdateGoldGoods(addGoldGoodsAndFiles o
 	if err != nil {
 		return err
 	}
-
+	// 获取数据库里该商品所有的工单
+	allGoldGoodsFileList := []orderManager.GoldGoodsFile{}
+	global.GVA_DB.Find(&allGoldGoodsFileList, "goods_id = ?", goldGoods.ID)
+	// 获取数据库中所有工单的ID
+	existIdList := []uint{}
+	for _, element := range allGoldGoodsFileList {
+		existIdList = append(existIdList, element.ID)
+	}
 	for _, v := range addGoldGoodsAndFiles.GoldGoodsFileList {
 		if v.ID != nil {
+			// 删除存在的ID
+			// 删除切片中的元素
+			indexToRemove := -1
+			for i, value := range existIdList {
+				if value == *v.ID {
+					indexToRemove = i
+					break
+				}
+			}
+			existIdList = append(existIdList[:indexToRemove], existIdList[indexToRemove+1:]...)
 			goldGoodsFile := &orderManager.GoldGoodsFile{}
 			global.GVA_DB.First(&goldGoodsFile, v.ID)
 			goldGoodsFile.GoodsId = &goldGoods.ID
@@ -114,6 +131,13 @@ func (goldGoodsService *GoldGoodsService) UpdateGoldGoods(addGoldGoodsAndFiles o
 			if err != nil {
 				return err
 			}
+		}
+	}
+	// 删除已经存在的图片
+	for _, element := range existIdList {
+		err = global.GVA_DB.Delete(&orderManager.GoldGoodsFile{}, "id = ?", element).Error
+		if err != nil {
+			return err
 		}
 	}
 	return err
