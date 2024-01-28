@@ -263,7 +263,7 @@
     >
       <el-scrollbar height="550px">
         <el-descriptions column="1" border>
-          <el-descriptions-item label="商品分类Id">
+          <el-descriptions-item label="商品分类">
             {{ convertGoodsTypeId(formData.goodsTypeId) }}
           </el-descriptions-item>
           <el-descriptions-item label="商品名称">
