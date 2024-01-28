@@ -19,9 +19,9 @@ zap:
 
 # redis configuration
 redis:
+  addr: 149.129.78.23:16379
+  password: "34uvgw24f34%#f31"
   db: 0
-  addr: 177.7.0.14:6379
-  password: ""
 
 # mongo configuration
 mongo:
@@ -74,15 +74,18 @@ captcha:
 # mysql connect configuration
 # 未初始化之前请勿手动修改数据库信息！！！如果一定要手动初始化请看（https://gin-vue-admin.com/docs/first_master）
 mysql:
-  path: ""
-  port: ""
-  config: ""
-  db-name: ""
-  username: ""
-  password: ""
+  prefix: ""
+  port: "13306"
+  config: charset=utf8mb4&parseTime=True&loc=Local
+  db-name: gva
+  username: root
+  password: shuibeieiriv!v4FV!
+  path: 149.129.78.23
+  engine: ""
+  log-mode: error
   max-idle-conns: 10
   max-open-conns: 100
-  log-mode: ""
+  singular: false
   log-zap: false
 
 # pgsql connect configuration
