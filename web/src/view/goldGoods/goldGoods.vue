@@ -551,7 +551,10 @@ const updateGoldGoodsFunc = async (row) => {
   type.value = "update";
   if (res.code === 0) {
     formData.value = res.data.regoldGoods;
-    fileList.value = res.data.regoldGoods.goldGoodsFileList;
+    console.log(res.data.regoldGoods.goldGoodsFileList);
+    if (res.data.regoldGoods.goldGoodsFileList != null) {
+      fileList.value = res.data.regoldGoods.goldGoodsFileList;
+    }
     dialogFormVisible.value = true;
   }
 };
@@ -589,7 +592,14 @@ const getDetails = async (row) => {
   if (res.code === 0) {
     formData.value = res.data.regoldGoods;
     console.log("formData", res.data.regoldGoods);
-    fileList.value = res.data.regoldGoods.goldGoodsFileList;
+    console.log(
+      "formData.goldGoodsFileList",
+      res.data.regoldGoods.goldGoodsFileList
+    );
+    if (res.data.regoldGoods.goldGoodsFileList != null) {
+      fileList.value = res.data.regoldGoods.goldGoodsFileList;
+    }
+    console.log("fileList.value", fileList.value);
     openDetailShow();
   }
 };
@@ -677,10 +687,22 @@ const handlePictureCardPreview = (uploadFile) => {
 const uploadSuccess = (res) => {
   console.log("uploadSuccess", res.data);
   console.log(fileList.value);
-  formData.value.goldGoodsFileList.push({
-    fileName: res.data.file.key,
-    filePath: res.data.file.url,
-  });
+  if (
+    formData.value.goldGoodsFileList == null ||
+    formData.value.goldGoodsFileList.length == 0
+  ) {
+    formData.value.goldGoodsFileList = [
+      {
+        fileName: res.data.file.key,
+        filePath: res.data.file.url,
+      },
+    ];
+  } else {
+    formData.value.goldGoodsFileList.push({
+      fileName: res.data.file.key,
+      filePath: res.data.file.url,
+    });
+  }
   console.log("fileList", fileList.value);
   console.log("formData", formData.value.goldGoodsFileList);
 };

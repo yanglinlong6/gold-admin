@@ -12,7 +12,7 @@ type GoldGoodsResp struct {
 	GoodsPrice        *int                `json:"goodsPrice"`        //商品价格
 	CreateName        string              `json:"createName"`        //商品创建人
 	CreateTime        *time.Time          `json:"createTime"`        //创建时间
-	UpdateName        string              `json:"UpdateName"`        //商品更新人
+	UpdateName        string              `json:"updateName"`        //商品更新人
 	UpdateTime        *time.Time          `json:"updateTime"`        //更新时间
 	GoldGoodsFileList []GoldGoodsFileResp `json:"goldGoodsFileList"` //商品文件列表
 }
@@ -26,6 +26,6 @@ type GoldGoodsFileResp struct {
 	FilePath   string     `json:"filePath"`   //文件路径
 	CreateName string     `json:"createName"` //创建人创建人
 	CreateTime *time.Time `json:"createTime"` //创建时间
-	UpdateName string     `json:"UpdateName"` //更新人创建人
+	UpdateName string     `json:"updateName"` //更新人创建人
 	UpdateTime *time.Time `json:"updateTime"` //更新时间
 }

@@ -60,6 +60,15 @@ func (goldGoodsService *GoldGoodsService) AddGoldGoodsAndFiles(addGoldGoodsAndFi
 // Author [piexlmax](https://github.com/piexlmax)
 func (goldGoodsService *GoldGoodsService) DeleteGoldGoods(id string) (err error) {
 	err = global.GVA_DB.Delete(&orderManager.GoldGoods{}, "id = ?", id).Error
+	// 删除商品以后同步删除商品所在的图片
+	goldGoodsFileList := []orderManager.GoldGoodsFile{}
+	global.GVA_DB.Find(&goldGoodsFileList, "goods_id = ?", id)
+	for _, v := range goldGoodsFileList {
+		err = global.GVA_DB.Delete(&orderManager.GoldGoodsFile{}, "id = ?", v.ID).Error
+		if err != nil {
+			return err
+		}
+	}
 	return err
 }
 
@@ -67,6 +76,17 @@ func (goldGoodsService *GoldGoodsService) DeleteGoldGoods(id string) (err error)
 // Author [piexlmax](https://github.com/piexlmax)
 func (goldGoodsService *GoldGoodsService) DeleteGoldGoodsByIds(ids []string, userId int) (err error) {
 	err = global.GVA_DB.Delete(&[]orderManager.GoldGoods{}, "id in ?", ids).Error
+	// 删除商品以后同步删除商品所在的图片
+	for _, v := range ids {
+		goldGoodsFileList := []orderManager.GoldGoodsFile{}
+		global.GVA_DB.Find(&goldGoodsFileList, "goods_id = ?", v)
+		for _, v := range goldGoodsFileList {
+			err = global.GVA_DB.Delete(&orderManager.GoldGoodsFile{}, "id = ?", v.ID).Error
+			if err != nil {
+				return err
+			}
+		}
+	}
 	return err
 }
 
