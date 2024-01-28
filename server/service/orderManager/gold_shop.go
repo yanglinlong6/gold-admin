@@ -90,7 +90,7 @@ func (goldShopService *GoldShopService) GetGoldShop(id string) (GoldShopResp ord
 		Status:     goldShop.Status,
 		CreateName: sysUserMap[uint(*goldShop.CreateId)].Username,
 		CreateTime: goldShop.CreateTime,
-		UpdateName: sysUserMap[uint(*goldShop.CreateId)].Username,
+		UpdateName: sysUserMap[uint(*goldShop.UpdateId)].Username,
 		UpdateTime: goldShop.UpdateTime,
 	}
 	return goldShopResp, err
@@ -150,7 +150,7 @@ func (goldShopService *GoldShopService) GetGoldShopInfoList(info orderManagerReq
 			Status:     element.Status,
 			CreateName: sysUserMap[uint(*element.CreateId)].Username,
 			CreateTime: element.CreateTime,
-			UpdateName: sysUserMap[uint(*element.CreateId)].Username,
+			UpdateName: sysUserMap[uint(*element.UpdateId)].Username,
 			UpdateTime: element.UpdateTime,
 		}
 		goldShopRespList = append(goldShopRespList, goldShopResp)
